@@ -25,5 +25,5 @@ Before setting up the project, ensure you have:
 
 # Clone the Repository
 ```sh
-git clone https://github.com/STARGATELIGHT/STUDENTS.git
+git clone https://github.com/STARGATELIGHT/networking_demo.git
 cd STUDENTS

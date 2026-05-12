@@ -1,29 +1,32 @@
-<?php 
+<?php
 session_start();
-require_once('classes/actions.class.php');
-$actionClass = new Actions();
-$action = $_GET['action'] ?? "";
-$response = [];
-switch($action){
-    case 'save_class':
-        $response = $actionClass->save_class();
-        break;
-    case 'delete_class':
-        $response = $actionClass->delete_class();
-        break;
-    case 'save_student':
-        $response = $actionClass->save_student();
-        break;
-    case 'delete_student':
-        $response = $actionClass->delete_student();
-        break;
-    case 'save_attendance':
-        $response = $actionClass->save_attendance();
-        break;
-    default:
-        $response = ["status" => "error", "msg" => "Undefined API Action!"];
-        break;
+
+header('Content-Type: application/json');
+
+require_once __DIR__ . '/classes/actions.class.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(["status" => "error", "msg" => "Method not allowed"]);
+    exit;
 }
 
+$action = $_POST['action'] ?? "";
+$actionClass = new Actions();
+
+$allowedActions = [
+    'save_class',
+    'delete_class',
+    'save_student',
+    'delete_student',
+    'save_attendance'
+];
+
+if (!in_array($action, $allowedActions)) {
+    http_response_code(400);
+    echo json_encode(["status" => "error", "msg" => "Invalid action"]);
+    exit;
+}
+
+$response = $actionClass->$action();
 echo json_encode($response);
-?>
